@@ -58,7 +58,7 @@ class _productapiState extends State<productapi> {
 
       if(response.statusCode < 299)
       {
-        print('Data posted successfully');
+        print('Data posted successfully!');
         var jsonData = jsonDecode(response.body);
 
         final newProduct = Product(
