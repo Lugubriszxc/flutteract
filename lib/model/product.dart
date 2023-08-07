@@ -1,8 +1,8 @@
 class Product {
-  final int ProductId;
-  final String Productname;
-  final int Stock;
-  final String Status;
+  int ProductId;
+  String Productname;
+  int Stock;
+  String Status;
 
   Product({
     required this.ProductId,

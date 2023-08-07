@@ -88,6 +88,43 @@ class _productapiState extends State<productapi> {
     }
   }
 
+  //update the product
+  Future updateProd(prodVal) async 
+  {
+    print(prodVal.ProductId);
+    var res = products.indexWhere((element) => element.ProductId == prodVal.ProductId);
+    print("index val : ");print(res);
+    try
+    {
+      var response = await http.post(
+      Uri.parse("https://localhost:7276/api/newapi/updateProd"),
+        //headers: {'Content-Type': 'application/json'},
+      body: {
+          "ProductId" : prodVal.ProductId.toString(),
+          "Productname" : prodVal.Productname,
+          "Stock" : prodVal.Stock.toString(),
+          "Status" : "Active",
+        }
+      //body: jsonEncode(product.toJson()),
+      );
+      print(response.statusCode);
+      if(response.statusCode < 299)
+      {
+        setState(() {
+          Navigator.pop(context);
+          // products[res].Productname = prodVal.Productname;
+          // products[res].Stock = prodVal.Stock;
+          // products[res].Status = prodVal.Status;
+        });
+      }
+
+    }
+    catch(e)
+    {
+      print(e);
+    }
+  }
+
   //after confirming, proceed to this function
   Future deleteProd(int val) async
   {
@@ -145,15 +182,16 @@ class _productapiState extends State<productapi> {
   //to populate the value of products inside
   void popUpdate(int id)
   {
-    final productname = TextEditingController();
-    final stock = TextEditingController();
+    var productname = TextEditingController();
+    var stock = TextEditingController();
 
     var res = products.firstWhere((element) => element.ProductId == id);
     if(res.isNull){
       print("Found nothing");
     }
     else{
-      productname.text = res.Productname;
+      print(res);
+      productname.text = '${res.Productname}';
       stock.text = '${res.Stock}';
     }
 
@@ -197,8 +235,13 @@ class _productapiState extends State<productapi> {
           ),
           actions: [
             MaterialButton(
-              onPressed: () => postProducts(productname.text, stock.text),
-              child: const Text('Save'),
+              onPressed: () => 
+              setState(() {
+                res.Productname = productname.text;
+                res.Stock = int.parse(stock.text);
+                updateProd(res);
+              }),
+              child: const Text('Update'),
             ),
             MaterialButton(
               onPressed: (){
