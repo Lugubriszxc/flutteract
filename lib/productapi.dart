@@ -1,8 +1,11 @@
 //import 'dart:ffi';
 
+//import 'dart:js_interop';
+
 import 'dart:js_interop';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutteract/model/product.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -191,7 +194,7 @@ class _productapiState extends State<productapi> {
     }
     else{
       print(res);
-      productname.text = '${res.Productname}';
+      productname.text = res.Productname;
       stock.text = '${res.Stock}';
     }
 
@@ -221,6 +224,10 @@ class _productapiState extends State<productapi> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   controller: stock,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
                   decoration: const InputDecoration(
                     hintText: "Stocks",
                     border: OutlineInputBorder(
@@ -285,6 +292,10 @@ class _productapiState extends State<productapi> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   controller: stock,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
                   decoration: const InputDecoration(
                     hintText: "Stocks",
                     border: OutlineInputBorder(
@@ -314,6 +325,68 @@ class _productapiState extends State<productapi> {
     );
   }
 
+  void returnTile(){
+    FutureBuilder(
+        future: getProducts(),
+        builder: (context, snapshot) {
+          //if is it done loading? then show team data
+          //print(snapshot.connectionState == Connectionstate.done);
+          if(snapshot.connectionState == ConnectionState.done){
+            Container(
+              width: 135,
+              height: 131,
+              decoration: ShapeDecoration(
+                color: Color(0xFFD9D9D9),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ); //last section.. wa nako kahibaw
+            return ListView.builder(
+              itemCount: products.length,
+              itemBuilder:(context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child:
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      title: Text(products[index].Productname),
+                      subtitle: Text("Stocks: ${products[index].Stock}"),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () => 
+                            popUpdate(products[index].ProductId),
+                            child: const Text('Update'),
+                          ),
+                          const SizedBox(width: 8), // Add some spacing between the buttons
+                          ElevatedButton(
+                            onPressed: () => //deleteProd(products[index].ProductId),
+                            popDeleteConfirmation(products[index].ProductId),
+                            child: const Text('Delete'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          }
+          else{
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      );
+  }
+
   void printContext()
   {
     print('HAHAHA');
@@ -325,7 +398,9 @@ class _productapiState extends State<productapi> {
       appBar: AppBar(
         title: const Center(child: Text("Product")),
       ),
-      body: FutureBuilder(
+      
+      body:
+      FutureBuilder(
         future: getProducts(),
         builder: (context, snapshot) {
           //if is it done loading? then show team data
@@ -343,7 +418,7 @@ class _productapiState extends State<productapi> {
                     ),
                     child: ListTile(
                       title: Text(products[index].Productname),
-                      subtitle: Text(products[index].Stock.toString()),
+                      subtitle: Text("Stocks: ${products[index].Stock}"),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
