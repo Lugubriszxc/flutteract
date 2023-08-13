@@ -2,7 +2,6 @@
 
 //import 'dart:js_interop';
 
-import 'dart:js_interop';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,11 +22,14 @@ class productapi extends StatefulWidget {
 class _productapiState extends State<productapi> {
 
   List<Product> products = [];
+  List<Product> prodHolder = [];
+  int nActives = 0;
+  int oStock = 0;
 
-  void printContext()
-  {
-    getProducts();
-  }
+  // void printContext()
+  // {
+  //   getProducts();
+  // }
 
   //populate the products
   Future getProducts() async {
@@ -44,8 +46,35 @@ class _productapiState extends State<productapi> {
         );
       products.add(prd);
     }
-    //print(products);
-    print(products.length);
+  }
+
+  Future showStats() async {
+
+    //nActives = 0;
+    //oStock = 0;
+
+    List<Product> prodHolder = [];
+    prodHolder.clear();
+
+    var response = await http.get(Uri.https('localhost:7276','api/newapi/getprod'));
+    var jsonData = jsonDecode(response.body);
+
+    for(var eachProd in jsonData){
+      final prd = Product(
+        ProductId: eachProd['productId'],
+        Productname: eachProd['productname'], 
+        Status: eachProd['status'], 
+        Stock: eachProd['stock'],
+        );
+
+      prodHolder.add(prd);
+    }
+
+    //count the number of active stocks
+    nActives = prodHolder.where((element) => element.Status == "Active" && element.Stock > 0).length;
+
+    //count the number of out of stocks
+    oStock = prodHolder.where((element) => element.Stock <= 0).length;
   }
 
   //send the value to the API
@@ -99,7 +128,7 @@ class _productapiState extends State<productapi> {
   }
 
   //update the product
-  Future updateProd(prodVal) async 
+  /*Future updateProd(prodVal) async 
   {
     print(prodVal.ProductId);
     var res = products.indexWhere((element) => element.ProductId == prodVal.ProductId);
@@ -133,7 +162,7 @@ class _productapiState extends State<productapi> {
     {
       print(e);
     }
-  }
+  }*/
 
   //after confirming, proceed to this function
   Future deleteProd(int val) async
@@ -168,7 +197,7 @@ class _productapiState extends State<productapi> {
   {
     showDialog(context: context, builder: (context){
       return AlertDialog(
-        title: const Text("Are you sure you want to delete this shit?"),
+        title: const Text("Are you sure you want to delete this product?"),
         // content: Scaffold(
         //   body: Text("Are you sure you want to delete bords?"),
         // ),
@@ -190,7 +219,7 @@ class _productapiState extends State<productapi> {
   }
 
   //to populate the value of products inside
-  void popUpdate(int id)
+  /*void popUpdate(int id)
   {
     var productname = TextEditingController();
     var stock = TextEditingController();
@@ -267,7 +296,7 @@ class _productapiState extends State<productapi> {
         );
       }  
     );
-  }
+  }*/
 
   void popDialog()
   {
@@ -334,6 +363,7 @@ class _productapiState extends State<productapi> {
 
   @override
   Widget build(BuildContext context) {
+    //showStats();
     return Scaffold(
     appBar: AppBar(
       title: const Center(child: Text("Product")),
@@ -341,72 +371,112 @@ class _productapiState extends State<productapi> {
     body: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 110,
-                height: 110,
-                decoration: ShapeDecoration(
-                  color: const Color(0xFFD9D9D9),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                child: GestureDetector(
-                  onTap: ()
-                  {
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const activePage()),
-                    ).then((value) {
-                      setState(() {
-                        print("ok");
-                      });
-                    });
-                  },
-                  child: const Center(
-                    child: Text(
-                      "Active",
-                      style: TextStyle(fontSize: 24),
+        FutureBuilder(
+          future: showStats(),
+          builder: (context, snapshot) {
+            
+            return Align(
+              alignment: Alignment.topCenter,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 110,
+                    height: 110,
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFD9D9D9),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: GestureDetector(
+                      onTap: ()
+                      {
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const activePage()),
+                        ).then((value) {
+                          setState(() {
+                            print("ok");
+                          });
+                        });
+                      },
+                      child:
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child : Column(
+                            children: [
+                              const Row(
+                                children: [
+                                  Text(
+                                  "Active:",
+                                  style: TextStyle(fontSize: 15),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(14.0),
+                                child: Text(
+                                  nActives.toString(),
+                                  style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 100),
-              Container(
-                width: 110,
-                height: 110,
-                decoration: ShapeDecoration(
-                  color: const Color(0xFFD9D9D9),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                child: GestureDetector(
-                  onTap: ()
-                  {
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => oStockPages()),
-                    ).then((value) {
-                      setState(() {
-                        print("ok");
-                      });
-                    });
-                  },
-                  child: const Center(
-                    child: Text(
-                      "Out of stock",
-                      style: TextStyle(fontSize: 15),
+                  const SizedBox(width: 100),
+                  Container(
+                    width: 110,
+                    height: 110,
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFD9D9D9),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: GestureDetector(
+                      onTap: ()
+                      {
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const oStockPages()),
+                        ).then((value) {
+                          setState(() {
+                            print("ok");
+                          });
+                        });
+                      },
+                      child: 
+                      Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child : Column(
+                            children: [
+                              const Row(
+                                children: [
+                                  Text(
+                                  "Out of Stock:",
+                                  style: TextStyle(fontSize: 15),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(14.0),
+                                child: Text(
+                                  oStock.toString(),
+                                  style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            );
+          }
         ),
         Expanded(
           child: FutureBuilder(
@@ -433,7 +503,7 @@ class _productapiState extends State<productapi> {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => updatePage(productId: products[index].ProductId,)),
+                                    MaterialPageRoute(builder: (context) => updatePage(productId: products[index].ProductId, prods: products,)),
                                     ).then((value) {
                                       setState(() {
                                         print("ok");
