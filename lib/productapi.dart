@@ -7,9 +7,11 @@ import 'dart:js_interop';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutteract/model/product.dart';
+import 'package:flutteract/pages/ActivePage.dart';
+import 'package:flutteract/pages/outOfStockPage.dart';
+import 'package:flutteract/pages/updatePage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 
 class productapi extends StatefulWidget {
   const productapi({super.key});
@@ -21,6 +23,11 @@ class productapi extends StatefulWidget {
 class _productapiState extends State<productapi> {
 
   List<Product> products = [];
+
+  void printContext()
+  {
+    getProducts();
+  }
 
   //populate the products
   Future getProducts() async {
@@ -226,7 +233,7 @@ class _productapiState extends State<productapi> {
                   controller: stock,
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
+                  FilteringTextInputFormatter.digitsOnly
                   ],
                   decoration: const InputDecoration(
                     hintText: "Stocks",
@@ -325,134 +332,143 @@ class _productapiState extends State<productapi> {
     );
   }
 
-  void returnTile(){
-    FutureBuilder(
-        future: getProducts(),
-        builder: (context, snapshot) {
-          //if is it done loading? then show team data
-          //print(snapshot.connectionState == Connectionstate.done);
-          if(snapshot.connectionState == ConnectionState.done){
-            Container(
-              width: 135,
-              height: 131,
-              decoration: ShapeDecoration(
-                color: Color(0xFFD9D9D9),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ); //last section.. wa nako kahibaw
-            return ListView.builder(
-              itemCount: products.length,
-              itemBuilder:(context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child:
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ListTile(
-                      title: Text(products[index].Productname),
-                      subtitle: Text("Stocks: ${products[index].Stock}"),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () => 
-                            popUpdate(products[index].ProductId),
-                            child: const Text('Update'),
-                          ),
-                          const SizedBox(width: 8), // Add some spacing between the buttons
-                          ElevatedButton(
-                            onPressed: () => //deleteProd(products[index].ProductId),
-                            popDeleteConfirmation(products[index].ProductId),
-                            child: const Text('Delete'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          }
-          else{
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      );
-  }
-
-  void printContext()
-  {
-    print('HAHAHA');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text("Product")),
-      ),
-      
-      body:
-      FutureBuilder(
-        future: getProducts(),
-        builder: (context, snapshot) {
-          //if is it done loading? then show team data
-          //print(snapshot.connectionState == Connectionstate.done);
-          if(snapshot.connectionState == ConnectionState.done){
-            return ListView.builder(
-              itemCount: products.length,
-              itemBuilder:(context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ListTile(
-                      title: Text(products[index].Productname),
-                      subtitle: Text("Stocks: ${products[index].Stock}"),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () => 
-                            popUpdate(products[index].ProductId),
-                            child: const Text('Update'),
-                          ),
-                          const SizedBox(width: 8), // Add some spacing between the buttons
-                          ElevatedButton(
-                            onPressed: () => //deleteProd(products[index].ProductId),
-                            popDeleteConfirmation(products[index].ProductId),
-                            child: const Text('Delete'),
-                          ),
-                        ],
-                      ),
+    appBar: AppBar(
+      title: const Center(child: Text("Product")),
+    ),
+    body: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Align(
+          alignment: Alignment.topCenter,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 110,
+                height: 110,
+                decoration: ShapeDecoration(
+                  color: const Color(0xFFD9D9D9),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: GestureDetector(
+                  onTap: ()
+                  {
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const activePage()),
+                    ).then((value) {
+                      setState(() {
+                        print("ok");
+                      });
+                    });
+                  },
+                  child: const Center(
+                    child: Text(
+                      "Active",
+                      style: TextStyle(fontSize: 24),
                     ),
                   ),
-                );
-              },
-            );
-          }
-          else{
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: popDialog,
-        tooltip: 'Create Product',
-        child: const Icon(Icons.add),
+                ),
+              ),
+              const SizedBox(width: 100),
+              Container(
+                width: 110,
+                height: 110,
+                decoration: ShapeDecoration(
+                  color: const Color(0xFFD9D9D9),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: GestureDetector(
+                  onTap: ()
+                  {
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => oStockPages()),
+                    ).then((value) {
+                      setState(() {
+                        print("ok");
+                      });
+                    });
+                  },
+                  child: const Center(
+                    child: Text(
+                      "Out of stock",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-    );
+        Expanded(
+          child: FutureBuilder(
+            future: getProducts(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return ListView.builder(
+                  itemCount: products.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: ListTile(
+                          title: Text(products[index].Productname),
+                          subtitle: Text("Stocks: ${products[index].Stock}"),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => updatePage(productId: products[index].ProductId,)),
+                                    ).then((value) {
+                                      setState(() {
+                                        print("ok");
+                                      });
+                                    });
+                                }, //=> popUpdate(products[index].ProductId),
+                                child: const Text('Update'),
+                              ),
+                              const SizedBox(width: 8),
+                              ElevatedButton(
+                                onPressed: () => popDeleteConfirmation(products[index].ProductId),
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
+          ),
+        ),
+      ],
+    ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: popDialog,
+      tooltip: 'Create Product',
+      child: const Icon(Icons.add),
+    ),
+  );
   }
 }
