@@ -36,7 +36,7 @@ class _bNavBarState extends State<bNavBar> {
       appBar: AppBar
       (
         title: const Center(child: Text("Calculator")),
-        backgroundColor: Colors.black,
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         foregroundColor: Colors.white,
       ),
       body: _pages[_selectedIndex],

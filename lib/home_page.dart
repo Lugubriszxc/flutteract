@@ -46,7 +46,7 @@ class nbaAct extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey[200],
+                      color: Color.fromARGB(255, 235, 181, 3),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ListTile(

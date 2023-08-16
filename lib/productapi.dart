@@ -3,6 +3,8 @@
 //import 'dart:js_interop';
 
 
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutteract/model/product.dart';
@@ -307,19 +309,21 @@ class _productapiState extends State<productapi> {
       builder: (context)
       {
         return AlertDialog(
-          title: const Center(child: Text("Add product")),
+          title: const Center(child: Text("Add product"),),
+          //backgroundColor: Color.fromARGB(255, 223, 221, 211),
           content: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(10.0),
                 child: TextField(
                   controller: productname,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: "Product name",
-                    border: OutlineInputBorder(
+                    suffix: IconButton(onPressed: () => productname.clear(), icon: Icon(Icons.close)),
+                    border: const OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Colors.black,
-                        width: 10,
+                        width: 20,
                         style: BorderStyle.solid)),
                   ),
                 ),
@@ -332,9 +336,10 @@ class _productapiState extends State<productapi> {
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly
                   ],
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: "Stocks",
-                    border: OutlineInputBorder(
+                    suffix: IconButton(onPressed: () => stock.clear(), icon: Icon(Icons.close)),
+                    border: const OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Colors.black,
                         width: 10,
@@ -367,7 +372,10 @@ class _productapiState extends State<productapi> {
     return Scaffold(
     appBar: AppBar(
       title: const Center(child: Text("Product")),
+      backgroundColor: Color.fromARGB(255, 233, 214, 3),
+      foregroundColor: Color.fromARGB(255, 0, 0, 0),
     ),
+    backgroundColor: Colors.white10,
     body: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -375,105 +383,119 @@ class _productapiState extends State<productapi> {
           future: showStats(),
           builder: (context, snapshot) {
             
-            return Align(
-              alignment: Alignment.topCenter,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 110,
-                    height: 110,
-                    decoration: ShapeDecoration(
-                      color: const Color(0xFFD9D9D9),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+            return Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 110,
+                      height: 110,
+                      decoration: BoxDecoration(
+    color: Color.fromARGB(255, 233, 214, 3),
+    borderRadius: BorderRadius.circular(20),
+    boxShadow: [
+      BoxShadow(
+        color: Color.fromARGB(255, 46, 44, 44), // Shadow color
+        blurRadius: 4,   // How blurry the shadow should be
+        offset: Offset(4, 8),
+                        ),
+    ],
+                      ),
+                      child: GestureDetector(
+                        onTap: ()
+                        {
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const activePage()),
+                          ).then((value) {
+                            setState(() {
+                              print("ok");
+                            });
+                          });
+                        },
+                        child:
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child : Column(
+                              children: [
+                                const Row(
+                                  children: [
+                                    Text(
+                                    "Active:",
+                                    style: TextStyle(fontSize: 15,),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(14.0),
+                                  child: Text(
+                                    nActives.toString(),
+                                    style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                       ),
                     ),
-                    child: GestureDetector(
-                      onTap: ()
-                      {
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const activePage()),
-                        ).then((value) {
-                          setState(() {
-                            print("ok");
+                    const SizedBox(width: 100),
+                    Container(
+                      width: 110,
+                      height: 110,
+                      decoration: BoxDecoration(
+    color: Color.fromARGB(255, 233, 214, 3),
+    borderRadius: BorderRadius.circular(20),
+    boxShadow: [
+      BoxShadow(
+        color: Color.fromARGB(255, 46, 44, 44), // Shadow color
+        blurRadius: 4,   // How blurry the shadow should be
+        offset: Offset(4, 8),
+                        ),
+    ],
+                      ),
+                      child: GestureDetector(
+                        onTap: ()
+                        {
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const oStockPages()),
+                          ).then((value) {
+                            setState(() {
+                              print("ok");
+                            });
                           });
-                        });
-                      },
-                      child:
+                        },
+                        child: 
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child : Column(
-                            children: [
-                              const Row(
-                                children: [
-                                  Text(
-                                  "Active:",
-                                  style: TextStyle(fontSize: 15),
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(14.0),
-                                child: Text(
-                                  nActives.toString(),
-                                  style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                            padding: const EdgeInsets.all(8.0),
+                            child : Column(
+                              children: [
+                                const Row(
+                                  children: [
+                                    Text(
+                                    "Out of Stock:",
+                                    style: TextStyle(fontSize: 15,),
+                                    
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
+                                Padding(
+                                  padding: const EdgeInsets.all(14.0),
+                                  child: Text(
+                                    oStock.toString(),
+                                    style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                    ),
-                  ),
-                  const SizedBox(width: 100),
-                  Container(
-                    width: 110,
-                    height: 110,
-                    decoration: ShapeDecoration(
-                      color: const Color(0xFFD9D9D9),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    child: GestureDetector(
-                      onTap: ()
-                      {
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const oStockPages()),
-                        ).then((value) {
-                          setState(() {
-                            print("ok");
-                          });
-                        });
-                      },
-                      child: 
-                      Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child : Column(
-                            children: [
-                              const Row(
-                                children: [
-                                  Text(
-                                  "Out of Stock:",
-                                  style: TextStyle(fontSize: 15),
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(14.0),
-                                child: Text(
-                                  oStock.toString(),
-                                  style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           }
@@ -490,11 +512,22 @@ class _productapiState extends State<productapi> {
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: const Color.fromARGB(255, 233, 214, 3),
                           borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+      BoxShadow(
+        color: Color.fromARGB(255, 46, 44, 44),
+        blurRadius: 4,
+        offset: Offset(4, 8), // Shadow position
+      ),
+    ],
                         ),
+                        
                         child: ListTile(
-                          title: Text(products[index].Productname),
+                          title: Text(
+                            products[index].Productname,
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                          ),
                           subtitle: Text("Stocks: ${products[index].Stock}"),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -509,13 +542,15 @@ class _productapiState extends State<productapi> {
                                         print("ok");
                                       });
                                     });
-                                }, //=> popUpdate(products[index].ProductId),
-                                child: const Text('Update'),
+                                },
+                                child: Icon(Icons.edit_note_rounded,
+                                color: Color.fromARGB(255, 37, 241, 30)
+                                ),
                               ),
                               const SizedBox(width: 8),
                               ElevatedButton(
                                 onPressed: () => popDeleteConfirmation(products[index].ProductId),
-                                child: const Text('Delete'),
+                                child: Icon(Icons.delete),
                               ),
                             ],
                           ),

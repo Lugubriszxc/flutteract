@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutteract/productapi.dart';
 
+import 'bottomNavBar.dart';
+
 
 void main() {
   runApp(const MyApp());

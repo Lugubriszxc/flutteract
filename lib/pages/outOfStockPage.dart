@@ -92,6 +92,7 @@ class _oStockPagesState extends State<oStockPages> {
     return Scaffold(
     appBar: AppBar(
       title: const Center(child: Text("Out of Stocks")),
+       backgroundColor: Color.fromARGB(255, 233, 214, 3),
     ),
     body: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -105,14 +106,24 @@ class _oStockPagesState extends State<oStockPages> {
                   itemCount: products.length,
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(10.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: Color.fromARGB(255, 227, 190, 3),
                           borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+      BoxShadow(
+        color: Color.fromARGB(255, 46, 44, 44),
+        blurRadius: 4,
+        offset: Offset(4, 8), // Shadow position
+      ),
+    ],
                         ),
                         child: ListTile(
-                          title: Text(products[index].Productname),
+                          title: Text(
+                            products[index].Productname,
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                          ),
                           subtitle: Text("Stocks: ${products[index].Stock}"),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -129,12 +140,15 @@ class _oStockPagesState extends State<oStockPages> {
                                     });
                                 
                                 },
-                                child: const Text('Update'),
+                                child: Icon(Icons.edit_note_rounded,
+                                color: Color.fromARGB(255, 37, 241, 30)
+                                ),
+                                
                               ),
                               const SizedBox(width: 8),
                               ElevatedButton(
                                 onPressed: () => popDeleteConfirmation(products[index].ProductId),
-                                child: const Text('Delete'),
+                                child: Icon(Icons.delete),
                               ),
                             ],
                           ),

@@ -76,8 +76,12 @@ class _updatePageState extends State<updatePage> {
   Widget build(BuildContext context) {
     populateUpdate();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Update Product'),
+      appBar: AppBar
+      (
+        title: const 
+        Text("Update Product"),
+        backgroundColor: const Color.fromARGB(255, 227, 190, 3),
+        foregroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -85,9 +89,10 @@ class _updatePageState extends State<updatePage> {
           children: [
             TextField(
               controller: productname,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: "Product name",
-                border: OutlineInputBorder(
+                suffix: IconButton(onPressed: () => stock.clear(), icon: Icon(Icons.close)),
+                border: const OutlineInputBorder(
                   borderSide: BorderSide(
                     color: Colors.black,
                     width: 1.0,
@@ -103,9 +108,10 @@ class _updatePageState extends State<updatePage> {
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly
               ],
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: "Stocks",
-                border: OutlineInputBorder(
+                suffix: IconButton(onPressed: () => stock.clear(), icon: Icon(Icons.close)),
+                border: const OutlineInputBorder(
                   borderSide: BorderSide(
                     color: Colors.black,
                     width: 1.0,
@@ -126,13 +132,15 @@ class _updatePageState extends State<updatePage> {
                       updateProd(res);
                     });
                   },
-                  child: const Text('Update'),
+                  child: Icon(Icons.check,
+                  color: Color.fromARGB(255, 0, 242, 20)),
                 ),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text('Cancel'),
+                  child: Icon(Icons.cancel,
+                  color: Color.fromARGB(255, 255, 0, 0)),
                 ),
               ],
             ),
